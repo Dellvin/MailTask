@@ -37,6 +37,7 @@ int UI::init() {
         return (3);
     }
     std::cout << "You successfully connected to server!" << std::endl;
+    return 0;
 }
 
 void UI::eventLoop() {
