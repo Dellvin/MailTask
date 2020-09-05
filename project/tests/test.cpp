@@ -10,5 +10,6 @@ extern "C++" {
 
 
 TEST(test, Test2) {
-    EXPECT_EQ(1, 1);
+    UI cli("lkjhflj", 2000);
+    EXPECT_EQ(cli.start(), 1);
 }
