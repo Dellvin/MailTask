@@ -167,5 +167,6 @@ TEST(test, both2) {
     }
     EXPECT_EQ(connectedMess, "Client with socket number");
     in.close();
+    EXPECT_EQ(0, 1);
     //remove("test.txt");
 }
