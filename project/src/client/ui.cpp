@@ -2,7 +2,7 @@
 // Created by Daniil Tchyorny on 03.09.2020.
 //
 
-#include "../include/ui.h"
+#include "../../include/client/ui.h"
 
 #include <utility>
 #include <unistd.h>

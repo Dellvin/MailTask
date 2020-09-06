@@ -8,7 +8,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11 -Wall -Wextra -Werror=pedantic")
 
 enable_testing()
 
-add_executable(iz2 project/src/main.cpp project/src/ui.cpp)
+add_executable(iz2 project/src/client/main.cpp project/src/client/ui.cpp)
 
 target_link_libraries(iz2 Threads::Threads)
 
