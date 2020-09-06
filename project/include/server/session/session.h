@@ -25,7 +25,7 @@ enum state {
 
 class Session {
 public:
-    Session(int socket, Server *boss) : sock(socket) { master = boss; }
+    Session(int socket, Server *boss);
 
     ~Session();
 
@@ -33,11 +33,11 @@ public:
 
     void sender(const std::string &message);
 
-    std::string nicknameGetter() { return nickname; }
+    std::string nicknameGetter();
 
-    void setState(state currentState) { flag = currentState; }
+    void setState(state currentState);
 
-    void resetRoom() { currentRoom = nullptr; }
+    void resetRoom();
 
 private:
     void checkMessage();

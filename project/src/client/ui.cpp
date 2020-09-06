@@ -14,8 +14,8 @@
 UI::UI(std::string &&ServerIP, uint32_t ServerPort) : ip(std::move(ServerIP)), port(ServerPort) {}
 
 int UI::start() {
-    uint8_t errorCode=init();
-    if(errorCode)return errorCode;
+    uint8_t errorCode = init();
+    if (errorCode)return errorCode;
     eventLoop();
 }
 
@@ -106,7 +106,7 @@ int UI::getMessage(buffer *ptr) {
     checkEOM(ptr);
     if (ptr->buf_used >= INBUFSIZE) {
         ptr->buf_used = 0;
-        std::cerr<<"Buffer overflow"<<std::endl;
+        std::cerr << "Buffer overflow" << std::endl;
     }
     return 1;
 }

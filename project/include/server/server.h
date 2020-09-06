@@ -13,6 +13,7 @@
 #include "./room/room.h"
 
 class Session;
+
 class Room;
 
 class Server {
@@ -27,7 +28,7 @@ public:
 
     std::unordered_map<Room *, std::vector<Session *>> *getRooms();
 
-    Room * getLobby(){ return defaultRoom; }
+    Room *getLobby() { return defaultRoom; }
 
 private:
     void acceptor(int listenSocket);

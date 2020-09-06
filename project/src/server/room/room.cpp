@@ -19,11 +19,11 @@ bool Room::handler(const std::vector<std::string> &command, Session *member, Roo
 
 enum operation Room::checkCommand(const std::string &message) {
     if (message == "#create") return CREATE;
-    else if (message == "#join") return JOIN;
-    else if (message == "#leave") return LEAVE;
-    else if (message == "#delete") return DELETE;
-    else if (message == "#member") return MEMBER;
-    else return NOT_COMMAND;
+    if (message == "#join") return JOIN;
+    if (message == "#leave") return LEAVE;
+    if (message == "#delete") return DELETE;
+    if (message == "#member") return MEMBER;
+    return NOT_COMMAND;
 }
 
 void Room::write(const std::vector<std::string> &message, Session *user) {
@@ -46,7 +46,7 @@ void Room::createMe(const std::vector<std::string> &name, Session *creator) {
     serverMuter.lock();
     master->getRooms()->insert(std::pair<Room *, std::vector<Session *>>(this, members));
     roomName = name[1];
-    serverMuter.lock();
+    serverMuter.unlock();
     write("The room '" + roomName + "' has been created!\n");
 }
 
@@ -60,8 +60,8 @@ void Room::addMember(Session *member) {
         return;
     }
     serverMuter.unlock();
-    write("The member '" + member->nicknameGetter() + "' has been joined!\n");
     sendHistory(member);
+    write("The member '" + member->nicknameGetter() + "' has been joined!\n");
 }
 
 void Room::deleteMe() {
@@ -133,3 +133,7 @@ void Room::sendMembers(Session *asker) {
     membersList += BREAK_LINE;
     asker->sender(membersList);
 }
+
+Room::Room(Server *s) { master = s; }
+
+std::string Room::nameGetter() { return roomName; }

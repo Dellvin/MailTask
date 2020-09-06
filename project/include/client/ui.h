@@ -12,7 +12,7 @@ constexpr uint16_t OUTBUFSIZE = 128;
 
 class UI {
 public:
-    struct buffer{
+    struct buffer {
         char buf[INBUFSIZE];
         int buf_used;
     };
@@ -23,11 +23,17 @@ public:
 
 private:
     int init();
+
     void eventLoop();
-    static void move(buffer *ptr,int pos);
+
+    static void move(buffer *ptr, int pos);
+
     static void checkEOM(buffer *ptr);
+
     int getMessage(buffer *ptr);
+
     bool sender();
+
 private:
     uint32_t port;
     std::string ip;

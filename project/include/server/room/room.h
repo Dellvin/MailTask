@@ -11,10 +11,13 @@
 #include <list>
 
 
-constexpr uint16_t HISTORY_SIZE=128;
+constexpr uint16_t HISTORY_SIZE = 128;
+
 class Server;
+
 class Session;
-enum operation{
+
+enum operation {
     NOT_COMMAND,
     MEMBER,
     CREATE,
@@ -25,11 +28,11 @@ enum operation{
 
 class Room {
 public:
-    Room(Server *s) {master=s;};
+    Room(Server *s);
 
-    bool handler(const std::vector<std::string> &command, Session *member = nullptr, Room *r=nullptr);
+    bool handler(const std::vector<std::string> &command, Session *member = nullptr, Room *r = nullptr);
 
-    std::string nameGetter(){ return roomName; }
+    std::string nameGetter();
 
 private:
     void addMember(Session *member);
@@ -42,9 +45,9 @@ private:
 
     void historySizeCheck();
 
-    void write(const std::vector<std::string> &message, Session *user);
+    void write(const std::vector<std::string> &message, Session *user);//for usual messages
 
-    void write(const std::string &message);
+    void write(const std::string &message); //for service information
 
     enum operation checkCommand(const std::string &message);
 
@@ -61,7 +64,6 @@ private:
     std::mutex serverMuter, storyMuter;
 
 };
-
 
 
 #endif //ENTERINGTASK_SERVER_ROOM_H

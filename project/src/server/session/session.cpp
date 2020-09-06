@@ -3,24 +3,21 @@
 //
 
 #include <unistd.h>
-#include "../../../include/server/session/session.h"
 #include <iostream>
+#include "../../../include/server/session/session.h"
 #include "../../../include/server/session/constexp.h"
-
-
-
 
 
 void Session::handling() {
     sender(HELLO_MESSAGE);
     uint16_t bytesCount;
-    while(true){
-        if(flag==EXIT) break;
-        bytesCount=read(sock, buff+lenBuf, buffSize-lenBuf);
-        if(bytesCount<=0) break;
-        lenBuf+=bytesCount;
+    while (true) {
+        if (flag == EXIT) break;
+        bytesCount = read(sock, buff + lenBuf, buffSize - lenBuf);
+        if (bytesCount <= 0) break;
+        lenBuf += bytesCount;
         checkMessage();
-        if(lenBuf>=buffSize)lenBuf=0;
+        if (lenBuf >= buffSize)lenBuf = 0;
     }
 }
 
@@ -29,24 +26,24 @@ void Session::sender(const std::string &message) {
 }
 
 void Session::checkMessage() {
-    while(true){
-        int16_t lfPos=-1;
-        for(int16_t i=0;i<lenBuf;++i){
-            if(buff[i]=='\n'){
-                lfPos=i;
+    while (true) {
+        int16_t lfPos = -1;
+        for (int16_t i = 0; i < lenBuf; ++i) {
+            if (buff[i] == '\n') {
+                lfPos = i;
                 break;
             }
         }
-        if(lfPos==-1)break;
+        if (lfPos == -1)break;
         std::string message;
-        for(uint8_t i=0;i<lfPos;++i){
-            message+=buff[i];
+        for (uint8_t i = 0; i < lfPos; ++i) {
+            message += buff[i];
         }
-        message[lfPos]='\0';
-        if (lfPos&&message[lfPos-1]=='\r')
-            message[lfPos-1]='\0';
+        message[lfPos] = '\0';
+        if (lfPos && message[lfPos - 1] == '\r')
+            message[lfPos - 1] = '\0';
         moveBuff(lfPos);
-        if(message.size()>255){
+        if (message.size() > 255) {
             sender(TOO_MESSAGE);
             return;
         }
@@ -57,24 +54,24 @@ void Session::checkMessage() {
 
 
 void Session::moveBuff(uint8_t distance) {
-    uint16_t j=0;
-    for(uint16_t i=distance+1;i<lenBuf;++i){
-        buff[j]=buff[i];
+    uint16_t j = 0;
+    for (uint16_t i = distance + 1; i < lenBuf; ++i) {
+        buff[j] = buff[i];
         j++;
     }
-    lenBuf-=distance+1;
+    lenBuf -= distance + 1;
 }
 
 void Session::parsing(const std::string &message) {
-    uint8_t wordCount=0;
-    for(uint8_t beginPos=0; beginPos < message.size(); ++beginPos){
-        uint8_t endPos=skipBreakers(message, beginPos);
+    uint8_t wordCount = 0;
+    for (uint8_t beginPos = 0; beginPos < message.size(); ++beginPos) {
+        uint8_t endPos = skipBreakers(message, beginPos);
         std::string word;
-        for(;beginPos<endPos;++beginPos){
-            if(message[beginPos]!='\0')
-                word+=message[beginPos];
+        for (; beginPos < endPos; ++beginPos) {
+            if (message[beginPos] != '\0')
+                word += message[beginPos];
         }
-        if(!word.empty()){
+        if (!word.empty()) {
             request.push_back(word);
             wordCount++;
         }
@@ -82,10 +79,10 @@ void Session::parsing(const std::string &message) {
 }
 
 uint8_t Session::skipBreakers(const std::string &rowMessage, uint8_t beginPos) {
-    uint8_t pos=beginPos;
-    for(;pos<rowMessage.size();++pos){
-        if(rowMessage[pos]==' ' || rowMessage[pos]=='\t'){
-            pos=pos;
+    uint8_t pos = beginPos;
+    for (; pos < rowMessage.size(); ++pos) {
+        if (rowMessage[pos] == ' ' || rowMessage[pos] == '\t') {
+            pos = pos;
             break;
         }
     }
@@ -93,63 +90,57 @@ uint8_t Session::skipBreakers(const std::string &rowMessage, uint8_t beginPos) {
 }
 
 void Session::execute() {
-    if(flag==REGISTRATION) login();
-    else if(flag==LOBBY){
-        if(!correctLobbyCommand(request[0])) {
-            sender(UNDEFINE_MESSAGE);
-        }
-        else if(request[0]=="#help")sender(HELP_MESSAGE);
-        else if(request[0]=="#exit"){
+    if (flag == REGISTRATION) login();
+    else if (flag == LOBBY) {
+        if (!correctLobbyCommand(request[0])) {
+            sender(UNDEFINED_MESSAGE);
+        } else if (request[0] == "#help")sender(HELP_MESSAGE);
+        else if (request[0] == "#exit") {
             sender(EXIT_MESSAGE);
-            flag=EXIT;
-        }
-        else if(request[0]=="#create"){
-            currentRoom=new Room(master);
+            flag = EXIT;
+        } else if (request[0] == "#create") {
+            currentRoom = new Room(master);
             currentRoom->handler(request, this);
-            flag=IN_ROOM;
-        }
-        else if(request[0]=="#join"){
-            if(findRoomByName(request[1])){
+            flag = IN_ROOM;
+        } else if (request[0] == "#join") {
+            if (findRoomByName(request[1])) {
                 currentRoom->handler(request, this);
-                flag=IN_ROOM;
+                flag = IN_ROOM;
             }
-        }
-        else if(request[0]=="#show") sendRooms();
-    }
-    else if(flag==IN_ROOM){
-        if(request[0]=="#delete"){
-            if(checkDeleteAbility()){
-                currentRoom->handler(request,this);
+        } else if (request[0] == "#show") sendRooms();
+    } else if (flag == IN_ROOM) {
+        if (request[0] == "#delete") {
+            if (checkDeleteAbility()) {
+                currentRoom->handler(request, this);
                 delete currentRoom;
             }
-        }
-        else
-            currentRoom->handler(request,this);
+        } else
+            currentRoom->handler(request, this);
     }
     request.clear();
 }
 
-bool Session::correctLobbyCommand(const std::string &command){
+bool Session::correctLobbyCommand(const std::string &command) {
     return command.find('#') == 0;
 }
 
 void Session::login() {
-    if(request.empty())return;
-    if(request.size()>1){
+    if (request.empty())return;
+    if (request.size() > 1) {
         sender(TOO_MUCH_LOGIN);
         sender(LOGIN_TRY);
         return;
     }
-    if(request[0].empty()){
+    if (request[0].empty()) {
         sender(TOO_MUCH_LOGIN);
         sender(EMPTY_LOGIN);
         return;
     }
     serverMuter.lock();
-    std::unordered_map<Room *,std::vector<Session*>> *rooms=master->getRooms();
-    for(const auto &room: *rooms){
-        for(const auto &user: room.second){
-            if(user->nickname == request[0]) {
+    std::unordered_map<Room *, std::vector<Session *>> *rooms = master->getRooms();
+    for (const auto &room: *rooms) {
+        for (const auto &user: room.second) {
+            if (user->nickname == request[0]) {
                 sender(USED_LOGIN);
                 serverMuter.unlock();
                 sender(LOGIN_TRY);
@@ -158,27 +149,28 @@ void Session::login() {
         }
     }
     serverMuter.unlock();
-    for(const auto &letter: request[0]){
-        if((letter>'9'|| letter<'0')&&(letter>'Z'||letter<'A')&&(letter>'z'||letter<'a')&&letter!='_'){
+    for (const auto &letter: request[0]) {
+        if ((letter > '9' || letter < '0') && (letter > 'Z' || letter < 'A') && (letter > 'z' || letter < 'a') &&
+            letter != '_') {
             sender(WRONG_LOGIN);
             sender(LOGIN_TRY);
             return;
         }
     }
     serverMuter.lock();
-    nickname=request[0];
+    nickname = request[0];
     master->getRooms()->at(master->getLobby()).push_back(this);
     serverMuter.unlock();
-    flag=LOBBY;
+    flag = LOBBY;
     request.clear();
     sender(SIGN_IN_OK);
 }
 
 bool Session::findRoomByName(const std::string &name) {
     serverMuter.lock();
-    for(const auto &room: *(master->getRooms())){
-        if(room.first->nameGetter()==name){
-            currentRoom=room.first;
+    for (const auto &room: *(master->getRooms())) {
+        if (room.first->nameGetter() == name) {
+            currentRoom = room.first;
             serverMuter.unlock();
             return true;
         }
@@ -191,18 +183,18 @@ bool Session::findRoomByName(const std::string &name) {
 void Session::sendRooms() {
     std::string roomsList(BREAK_LINE);
     serverMuter.lock();
-    for(const auto &room: *(master->getRooms())){
-        roomsList+=room.first->nameGetter()+'\n';
+    for (const auto &room: *(master->getRooms())) {
+        roomsList += room.first->nameGetter() + '\n';
     }
     serverMuter.unlock();
-    roomsList+='\n'+BREAK_LINE;
+    roomsList += '\n' + BREAK_LINE;
     sender(roomsList);
 }
 
 bool Session::checkDeleteAbility() {
     serverMuter.lock();
     roomMuter.lock();
-    if(master->getRooms()->at(currentRoom).at(0)==this) {
+    if (master->getRooms()->at(currentRoom).at(0) == this) {
         roomMuter.unlock();
         serverMuter.unlock();
         return true;
@@ -214,7 +206,13 @@ bool Session::checkDeleteAbility() {
 }
 
 Session::~Session() {
-    if(currentRoom)delete currentRoom;
+    if (currentRoom)delete currentRoom;
 }
 
+Session::Session(int socket, Server *boss) : sock(socket) { master = boss; }
 
+std::string Session::nicknameGetter() { return nickname; }
+
+void Session::setState(state currentState) { flag = currentState; }
+
+void Session::resetRoom() { currentRoom = nullptr; }
