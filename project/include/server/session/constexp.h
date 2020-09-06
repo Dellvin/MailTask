@@ -62,4 +62,8 @@ constexpr char LOGIN_TRY[] = "TRY AGAIN: ";
 constexpr char EMPTY_LOGIN[] = "----------------------------------------------------\n\n"
                               "SORRY, NICKNAME IS EMPTY!\n\n"
                               "----------------------------------------------------\n";
+
+constexpr char TOO_MESSAGE[] = "----------------------------------------------------\n\n"
+                               "SORRY, THIS MESSAGE IS TOO LONG FOR OUR SERVER\n\n"
+                               "----------------------------------------------------\n";
 #endif //ENTERINGTASK_SERVER_CONSTEXP_H

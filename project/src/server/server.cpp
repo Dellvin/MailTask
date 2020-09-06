@@ -95,5 +95,9 @@ void Server::stop() {
 
 std::unordered_map<Room *,std::vector<Session*>> *Server::getRooms() { return &chats; }
 
+Server::~Server() {
+    delete defaultRoom;
+}
+
 
 

@@ -27,6 +27,8 @@ class Session {
 public:
     Session(int socket, Server *boss) : sock(socket) { master = boss; }
 
+    ~Session();
+
     void handling();
 
     void sender(const std::string &message);

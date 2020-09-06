@@ -46,6 +46,10 @@ void Session::checkMessage() {
         if (lfPos&&message[lfPos-1]=='\r')
             message[lfPos-1]='\0';
         moveBuff(lfPos);
+        if(message.size()>255){
+            sender(TOO_MESSAGE);
+            return;
+        }
         parsing(message);
         execute();
     }
@@ -207,6 +211,10 @@ bool Session::checkDeleteAbility() {
     serverMuter.unlock();
     sender(DELETE_ERROR);
     return false;
+}
+
+Session::~Session() {
+    if(currentRoom)delete currentRoom;
 }
 
 
