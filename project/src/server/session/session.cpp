@@ -36,7 +36,7 @@ void Session::checkMessage() {
         }
         if (lfPos == -1)break;
         std::string message;
-        for (uint8_t i = 0; i < lfPos; ++i) {
+        for (uint64_t i = 0; i < lfPos; ++i) {
             message += buff[i];
         }
         message[lfPos] = '\0';
@@ -82,7 +82,6 @@ uint8_t Session::skipBreakers(const std::string &rowMessage, uint8_t beginPos) {
     uint8_t pos = beginPos;
     for (; pos < rowMessage.size(); ++pos) {
         if (rowMessage[pos] == ' ' || rowMessage[pos] == '\t') {
-            pos = pos;
             break;
         }
     }
@@ -187,7 +186,8 @@ void Session::sendRooms() {
         roomsList += room.first->nameGetter() + '\n';
     }
     serverMuter.unlock();
-    roomsList += '\n' + BREAK_LINE;
+    roomsList += '\n';
+    roomsList+= BREAK_LINE;
     sender(roomsList);
 }
 

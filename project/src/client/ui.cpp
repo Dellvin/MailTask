@@ -11,12 +11,13 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-UI::UI(std::string &&ServerIP, uint32_t ServerPort) : ip(std::move(ServerIP)), port(ServerPort) {}
+UI::UI(std::string &&ServerIP, uint32_t ServerPort) : port(ServerPort), ip(std::move(ServerIP)) {}
 
 int UI::start() {
     uint8_t errorCode = init();
     if (errorCode)return errorCode;
     eventLoop();
+    return 0;
 }
 
 int UI::init() {
@@ -36,7 +37,6 @@ int UI::init() {
         std::cerr << "Connection error" << std::endl;
         return (3);
     }
-    std::cout << "You successfully connected to server!" << std::endl;
     return 0;
 }
 

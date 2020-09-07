@@ -5,7 +5,7 @@
 #ifndef ENTERINGTASK_SERVER_CONSTEXP_H
 #define ENTERINGTASK_SERVER_CONSTEXP_H
 
-constexpr char HELLO_MESSAGE[] = "HELLO, PLEASE ENTER YOUR LOGIN: ";
+constexpr char HELLO_MESSAGE[] = "HELLO, PLEASE ENTER YOUR LOGIN: \n";
 
 constexpr char BREAK_LINE[] = "----------------------------------------------------\n\n";
 
@@ -58,7 +58,7 @@ constexpr char SIGN_IN_OK[] = "-------------------------------------------------
                               "YOU ARE SUCCESSFULLY REGISTERED!\n\n"
                               "----------------------------------------------------\n";
 
-constexpr char LOGIN_TRY[] = "TRY AGAIN: ";
+constexpr char LOGIN_TRY[] = "TRY AGAIN: \n";
 
 constexpr char EMPTY_LOGIN[] = "----------------------------------------------------\n\n"
                                "SORRY, NICKNAME IS EMPTY!\n\n"
